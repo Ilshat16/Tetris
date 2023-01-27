@@ -1,4 +1,15 @@
-﻿void CreateLine(int[,] matrix)
+﻿void MoveToLeft(int[,] matrix)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 1; j < matrix.GetLength(1) - 2; j++)
+        {
+            matrix[i, j] = matrix[i, j + 1];
+        }
+    }
+}
+
+void CreateLine(int[,] matrix)
 {
     int lineLength = 4;
     int middle = matrix.GetLength(1) / 2;
@@ -15,6 +26,7 @@ void ShowMenu()
     System.Console.WriteLine("2 - переместить вправо");
     System.Console.WriteLine("3 - повернуть");
     System.Console.WriteLine("4 - закончить ход");
+    System.Console.WriteLine("5 - выход из игры");
 }
 
 void CreateBorder(int[,] matrix)
@@ -46,7 +58,12 @@ int border = 20;
 int[,] tetrisBoard = new int[border, border];
 CreateBorder(tetrisBoard);
 CreateLine(tetrisBoard);
-PrintMatrix(tetrisBoard);
-ShowMenu();
-System.Console.Write("Выберите нужный пункт: ");
-int actionNum = int.Parse(Console.ReadLine());
+int actionNum = 0; 
+while (actionNum != 5)
+{
+    PrintMatrix(tetrisBoard);
+    ShowMenu();
+    System.Console.Write("Выберите нужный пункт: ");
+    actionNum = int.Parse(Console.ReadLine());
+    if (actionNum == 1) MoveToLeft(tetrisBoard);
+}
