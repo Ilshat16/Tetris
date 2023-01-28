@@ -1,21 +1,47 @@
-﻿void MoveToLeft(int[,] matrix)
+﻿void MoveToRight(int[,] matrix, string[] array)
 {
-    for (int i = 0; i < 4; i++)
+    string coords;
+    for (int i = array.Length - 1; i >= 0; i--)
     {
-        for (int j = 1; j < matrix.GetLength(1) - 2; j++)
-        {
-            matrix[i, j] = matrix[i, j + 1];
-        }
+        coords = array[i];
+        string[] coordsString = coords.Split(".");
+        int ind1 = int.Parse(coordsString[0]);
+        int ind2 = int.Parse(coordsString[1]);
+        if (ind2 == matrix.GetLength(1) - 2) break;
+        int newInd2 = ind2 + 1;
+        matrix[ind1, newInd2] = 1;
+        matrix[ind1, ind2] = 0;
+        array[i] = ind1.ToString() + "." + newInd2.ToString();
     }
 }
 
-void CreateLine(int[,] matrix)
+void MoveToLeft(int[,] matrix, string[] array)
+{
+    string coords;
+    for (int i = 0; i < array.Length; i++)
+    {
+        coords = array[i];
+        string[] coordsString = coords.Split(".");
+        int ind1 = int.Parse(coordsString[0]);
+        int ind2 = int.Parse(coordsString[1]);
+        if (ind2 == 1) break;
+        int newInd2 = ind2 - 1;
+        matrix[ind1, ind2] = 0;
+        matrix[ind1, newInd2] = 1;
+        array[i] = ind1.ToString() + "." + newInd2.ToString();
+    }
+}
+
+void CreateLine(int[,] matrix, string[] array)
 {
     int lineLength = 4;
     int middle = matrix.GetLength(1) / 2;
+    int colInd = 0;
     for (int i = 0; i < lineLength; i++)
     {
-        matrix[1, (middle - lineLength / 2) + i] = 1;
+        colInd = (middle - lineLength / 2) + i;
+        matrix[1, colInd] = 1;
+        array[i] = "1." + colInd.ToString();
     }
 }
 
@@ -56,14 +82,17 @@ void PrintMatrix(int[,] matrix)
 
 int border = 20;
 int[,] tetrisBoard = new int[border, border];
+string[] figurePosition = new string[4];
 CreateBorder(tetrisBoard);
-CreateLine(tetrisBoard);
-int actionNum = 0; 
+CreateLine(tetrisBoard, figurePosition);
+int actionNum = 0;
 while (actionNum != 5)
 {
     PrintMatrix(tetrisBoard);
     ShowMenu();
     System.Console.Write("Выберите нужный пункт: ");
     actionNum = int.Parse(Console.ReadLine());
-    if (actionNum == 1) MoveToLeft(tetrisBoard);
+    if (actionNum == 1) MoveToLeft(tetrisBoard, figurePosition);
+    if (actionNum == 2) MoveToRight(tetrisBoard, figurePosition);
+
 }
