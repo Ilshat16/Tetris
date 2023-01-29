@@ -63,6 +63,26 @@ void MoveToLeft(int[,] matrix, string[] array)
     }
 }
 
+void CreateZ(int[,] matrix, string[] array)
+{
+    int middle = matrix.GetLength(1) / 2;
+    int i = 0;
+    int ind1 = 1;
+    int ind2 = middle - 2;
+    while (i < array.Length)
+    {
+        ind2 += 1;
+        if (i == 2)
+        {
+            ind1 = 2;
+            ind2 -= 1;
+        }
+        array[i] = ind1.ToString() + "." + ind2.ToString();
+        matrix[ind1, ind2] = 1;
+        i++;
+    }
+}
+
 void CreateLine(int[,] matrix, string[] array)
 {
     int lineLength = 4;
@@ -78,8 +98,9 @@ void CreateLine(int[,] matrix, string[] array)
 
 int ChangeFigure(int[,] matrix, string[] array)
 {
-    int numFigure = new Random().Next(1);
+    int numFigure = new Random().Next(2);
     if (numFigure == 0) CreateLine(matrix, array);
+    if (numFigure == 1) CreateZ(matrix, array);
     return numFigure;
 }
 
@@ -127,6 +148,7 @@ int actionNum = 0;
 while (actionNum != 5)
 {
     PrintMatrix(tetrisBoard);
+    System.Console.WriteLine($"{string.Join(", ", figurePosition)}");
     ShowMenu();
     System.Console.Write("Выберите нужный пункт: ");
     actionNum = int.Parse(Console.ReadLine());
