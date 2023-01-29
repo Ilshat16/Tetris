@@ -1,4 +1,35 @@
-﻿void MoveToRight(int[,] matrix, string[] array)
+﻿void Rotate(int[,] matrix, string[] array, int num)
+{
+    int[,] figreMatrix = new int[4, 4];
+    string coords = array[0];
+    string[] coordsString = coords.Split(".");
+    int ind1 = int.Parse(coordsString[0]);
+    int ind2 = int.Parse(coordsString[1]);
+    for (int i = 0; i < figreMatrix.GetLength(0); i++)
+    {
+        for (int j = 0; j < figreMatrix.GetLength(1); j++)
+        {
+            figreMatrix[j, i] = matrix[ind1 + i, ind2 + j];
+        }
+    }
+    int k = 0;
+    for (int i = 0; i < figreMatrix.GetLength(0); i++)
+    {
+        for (int j = 0; j < figreMatrix.GetLength(1); j++)
+        {
+            int i1 = ind1 + i;
+            int i2 = ind2 + j;
+            matrix[i1, i2] = figreMatrix[i, j];
+            if (matrix[i1, i2] == 1)
+            {
+                array[k] = i1.ToString() + "." + i2.ToString();
+                k++;
+            }
+        }
+    }
+}
+
+void MoveToRight(int[,] matrix, string[] array)
 {
     string coords;
     for (int i = array.Length - 1; i >= 0; i--)
@@ -45,6 +76,13 @@ void CreateLine(int[,] matrix, string[] array)
     }
 }
 
+int ChangeFigure(int[,] matrix, string[] array)
+{
+    int numFigure = new Random().Next(1);
+    if (numFigure == 0) CreateLine(matrix, array);
+    return numFigure;
+}
+
 void ShowMenu()
 {
     System.Console.WriteLine("Меню выбора действия:");
@@ -84,7 +122,7 @@ int border = 20;
 int[,] tetrisBoard = new int[border, border];
 string[] figurePosition = new string[4];
 CreateBorder(tetrisBoard);
-CreateLine(tetrisBoard, figurePosition);
+int numFigure = ChangeFigure(tetrisBoard, figurePosition);
 int actionNum = 0;
 while (actionNum != 5)
 {
@@ -94,5 +132,6 @@ while (actionNum != 5)
     actionNum = int.Parse(Console.ReadLine());
     if (actionNum == 1) MoveToLeft(tetrisBoard, figurePosition);
     if (actionNum == 2) MoveToRight(tetrisBoard, figurePosition);
+    if (actionNum == 3) Rotate(tetrisBoard, figurePosition, numFigure);
 
 }
