@@ -1,10 +1,16 @@
-﻿void Rotate(int[,] matrix, string[] array, int num)
+﻿void LowDown(int[,] matrix, string[] array, int num)
+{
+    while (true)
+    {
+        
+    }
+}
+
+void Rotate(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
 {
     int[,] figreMatrix = new int[4, 4];
-    string coords = array[0];
-    string[] coordsString = coords.Split(".");
-    int ind1 = int.Parse(coordsString[0]);
-    int ind2 = int.Parse(coordsString[1]);
+    int ind1 = arrayRow[0];
+    int ind2 = arrayCol[0];
     for (int i = 0; i < figreMatrix.GetLength(0); i++)
     {
         for (int j = 0; j < figreMatrix.GetLength(1); j++)
@@ -22,54 +28,52 @@
             matrix[i1, i2] = figreMatrix[i, j];
             if (matrix[i1, i2] == 1)
             {
-                array[k] = i1.ToString() + "." + i2.ToString();
+                arrayRow[k] = i1;
+                arrayCol[k] = i2;
                 k++;
             }
         }
     }
 }
 
-void MoveToRight(int[,] matrix, string[] array)
+void MoveToRight(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
-    string coords;
-    for (int i = array.Length - 1; i >= 0; i--)
+    for (int i = arrayRow.Length - 1; i >= 0; i--)
     {
-        coords = array[i];
-        string[] coordsString = coords.Split(".");
-        int ind1 = int.Parse(coordsString[0]);
-        int ind2 = int.Parse(coordsString[1]);
+        int ind1 = arrayRow[i];
+        int ind2 = arrayCol[i];
         if (ind2 == matrix.GetLength(1) - 2) break;
         int newInd2 = ind2 + 1;
         matrix[ind1, newInd2] = 1;
         matrix[ind1, ind2] = 0;
-        array[i] = ind1.ToString() + "." + newInd2.ToString();
+        arrayRow[i] = ind1;
+        arrayCol[i] = newInd2;
     }
 }
 
-void MoveToLeft(int[,] matrix, string[] array)
+void MoveToLeft(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
     string coords;
-    for (int i = 0; i < array.Length; i++)
+    for (int i = 0; i < arrayRow.Length; i++)
     {
-        coords = array[i];
-        string[] coordsString = coords.Split(".");
-        int ind1 = int.Parse(coordsString[0]);
-        int ind2 = int.Parse(coordsString[1]);
+        int ind1 = arrayRow[i];
+        int ind2 = arrayCol[i];
         if (ind2 == 1) break;
         int newInd2 = ind2 - 1;
         matrix[ind1, ind2] = 0;
         matrix[ind1, newInd2] = 1;
-        array[i] = ind1.ToString() + "." + newInd2.ToString();
+        arrayRow[i] = ind1;
+        arrayCol[i] = newInd2;
     }
 }
 
-void CreateZ(int[,] matrix, string[] array)
+void CreateZ(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
     int middle = matrix.GetLength(1) / 2;
     int i = 0;
     int ind1 = 1;
     int ind2 = middle - 2;
-    while (i < array.Length)
+    while (i < arrayRow.Length)
     {
         ind2 += 1;
         if (i == 2)
@@ -77,13 +81,14 @@ void CreateZ(int[,] matrix, string[] array)
             ind1 = 2;
             ind2 -= 1;
         }
-        array[i] = ind1.ToString() + "." + ind2.ToString();
+        arrayRow[i] = ind1;
+        arrayCol[i] = ind2;
         matrix[ind1, ind2] = 1;
         i++;
     }
 }
 
-void CreateLine(int[,] matrix, string[] array)
+void CreateLine(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
     int lineLength = 4;
     int middle = matrix.GetLength(1) / 2;
@@ -92,15 +97,16 @@ void CreateLine(int[,] matrix, string[] array)
     {
         colInd = (middle - lineLength / 2) + i;
         matrix[1, colInd] = 1;
-        array[i] = "1." + colInd.ToString();
+        arrayRow[i] = 1;
+        arrayCol[i] = colInd;
     }
 }
 
-int ChangeFigure(int[,] matrix, string[] array)
+int ChangeFigure(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
     int numFigure = new Random().Next(2);
-    if (numFigure == 0) CreateLine(matrix, array);
-    if (numFigure == 1) CreateZ(matrix, array);
+    if (numFigure == 0) CreateLine(matrix, arrayRow, arrayCol);
+    if (numFigure == 1) CreateZ(matrix, arrayRow, arrayCol);
     return numFigure;
 }
 
@@ -141,19 +147,19 @@ void PrintMatrix(int[,] matrix)
 
 int border = 20;
 int[,] tetrisBoard = new int[border, border];
-string[] figurePosition = new string[4];
+int [] figurePositionRow = new int[4];
+int [] figurePositionCol = new int[4];
 CreateBorder(tetrisBoard);
-int numFigure = ChangeFigure(tetrisBoard, figurePosition);
+int numFigure = ChangeFigure(tetrisBoard, figurePositionRow, figurePositionCol);
 int actionNum = 0;
 while (actionNum != 5)
 {
     PrintMatrix(tetrisBoard);
-    System.Console.WriteLine($"{string.Join(", ", figurePosition)}");
     ShowMenu();
     System.Console.Write("Выберите нужный пункт: ");
     actionNum = int.Parse(Console.ReadLine());
-    if (actionNum == 1) MoveToLeft(tetrisBoard, figurePosition);
-    if (actionNum == 2) MoveToRight(tetrisBoard, figurePosition);
-    if (actionNum == 3) Rotate(tetrisBoard, figurePosition, numFigure);
+    if (actionNum == 1) MoveToLeft(tetrisBoard, figurePositionRow, figurePositionCol);
+    if (actionNum == 2) MoveToRight(tetrisBoard, figurePositionRow, figurePositionCol);
+    if (actionNum == 3) Rotate(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
 
 }
