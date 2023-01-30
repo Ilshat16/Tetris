@@ -1,8 +1,59 @@
-﻿void LowDown(int[,] matrix, string[] array, int num)
+﻿void LowDown(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
 {
-    while (true)
+    int[] arrayLowRow1 = new int[4];
+    int[] arrayLowCol1 = new int[4];
+    arrayLowCol1[0] = arrayCol[0];
+    arrayLowRow1[0] = arrayRow[0];
+    int l = 0;
+    for (int i = 1; i < arrayCol.Length; i++)
     {
-        
+        if (arrayCol[i] == arrayLowCol1[l]) arrayLowRow1[l] = arrayRow[i];
+        else
+        {
+            l++;
+            arrayLowCol1[l] = arrayCol[i];
+            arrayLowRow1[l] = arrayRow[i];
+        }
+    }
+    int length = 0;
+    for (int i = 0; i < arrayLowRow1.Length; i++)
+    {
+        if (arrayLowRow1[i] == 0 && arrayLowCol1[i] == 0) continue;
+        else length++;
+    }
+    int[] arrayLowCol2 = new int[length];
+    int[] arrayLowRow2 = new int[length];
+    int k = 0;
+    for (int i = 0; i < arrayLowRow1.Length; i++)
+    {
+        if (arrayLowRow1[i] == 0 && arrayLowCol1[i] == 0) continue;
+        else
+        {
+            arrayLowCol2[k] = arrayLowCol1[i];
+            arrayLowRow2[k] = arrayLowRow1[i];
+            k++;
+        }
+    }
+    bool down = false;
+    System.Console.WriteLine($"{string.Join(", ", arrayLowRow2)}");
+    System.Console.WriteLine($"{string.Join(", ", arrayLowCol2)}");
+    while (down == false)
+    {
+        for (int i = arrayRow.Length - 1; i >= 0; i--)
+        {
+        int ind1 = arrayRow[i];
+        int ind2 = arrayCol[i];
+        int newInd1 = ind1 + 1;
+        matrix[newInd1, ind2] = 1;
+        matrix[ind1, ind2] = 0;
+        arrayRow[i] = newInd1;
+        arrayCol[i] = ind2;
+        }
+        for (int j = 0; j < arrayLowCol2.Length; j++)
+        {
+            arrayLowRow2[j]++;
+            if(matrix[arrayLowRow2[j] + 1, arrayLowCol2[j]] == 1) down = true;
+        }
     }
 }
 
@@ -53,7 +104,6 @@ void MoveToRight(int[,] matrix, int[] arrayRow, int[] arrayCol)
 
 void MoveToLeft(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
-    string coords;
     for (int i = 0; i < arrayRow.Length; i++)
     {
         int ind1 = arrayRow[i];
@@ -147,8 +197,8 @@ void PrintMatrix(int[,] matrix)
 
 int border = 20;
 int[,] tetrisBoard = new int[border, border];
-int [] figurePositionRow = new int[4];
-int [] figurePositionCol = new int[4];
+int[] figurePositionRow = new int[4];
+int[] figurePositionCol = new int[4];
 CreateBorder(tetrisBoard);
 int numFigure = ChangeFigure(tetrisBoard, figurePositionRow, figurePositionCol);
 int actionNum = 0;
@@ -161,5 +211,6 @@ while (actionNum != 5)
     if (actionNum == 1) MoveToLeft(tetrisBoard, figurePositionRow, figurePositionCol);
     if (actionNum == 2) MoveToRight(tetrisBoard, figurePositionRow, figurePositionCol);
     if (actionNum == 3) Rotate(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
+    if (actionNum == 4) LowDown(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
 
 }
