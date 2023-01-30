@@ -1,4 +1,4 @@
-﻿void LowDown(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
+﻿void MoveDown(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
 {
     int[] arrayLowRow1 = new int[4];
     int[] arrayLowCol1 = new int[4];
@@ -222,16 +222,28 @@ int[,] tetrisBoard = new int[border, border];
 int[] figurePositionRow = new int[4];
 int[] figurePositionCol = new int[4];
 CreateBorder(tetrisBoard);
-int numFigure = ChangeFigure(tetrisBoard, figurePositionRow, figurePositionCol);
-int actionNum = 0;
-while (actionNum != 5)
+PrintMatrix(tetrisBoard);
+bool canContinue = true;
+while(canContinue)
 {
-    PrintMatrix(tetrisBoard);
-    ShowMenu();
-    System.Console.Write("Выберите нужный пункт: ");
-    actionNum = int.Parse(Console.ReadLine());
-    if (actionNum == 1) MoveToLeft(tetrisBoard, figurePositionRow, figurePositionCol);
-    if (actionNum == 2) MoveToRight(tetrisBoard, figurePositionRow, figurePositionCol);
-    if (actionNum == 3) Rotate(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
-    if (actionNum == 4) LowDown(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
+    int numFigure = ChangeFigure(tetrisBoard, figurePositionRow, figurePositionCol);
+    int actionNum = 0;
+    while (actionNum != 5)
+    {
+        PrintMatrix(tetrisBoard);
+        ShowMenu();
+        System.Console.Write("Выберите нужный пункт: ");
+        actionNum = int.Parse(Console.ReadLine());
+        if (actionNum == 1) MoveToLeft(tetrisBoard, figurePositionRow, figurePositionCol);
+        if (actionNum == 2) MoveToRight(tetrisBoard, figurePositionRow, figurePositionCol);
+        if (actionNum == 3) Rotate(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
+        if (actionNum == 4) 
+        {
+            MoveDown(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
+            break;
+        }
+        PrintMatrix(tetrisBoard);
+    }
+    if (actionNum == 5) canContinue = false;
+    
 }
