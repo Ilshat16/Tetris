@@ -41,18 +41,18 @@
     {
         for (int i = arrayRow.Length - 1; i >= 0; i--)
         {
-        int ind1 = arrayRow[i];
-        int ind2 = arrayCol[i];
-        int newInd1 = ind1 + 1;
-        matrix[newInd1, ind2] = 1;
-        matrix[ind1, ind2] = 0;
-        arrayRow[i] = newInd1;
-        arrayCol[i] = ind2;
+            int ind1 = arrayRow[i];
+            int ind2 = arrayCol[i];
+            int newInd1 = ind1 + 1;
+            matrix[newInd1, ind2] = 1;
+            matrix[ind1, ind2] = 0;
+            arrayRow[i] = newInd1;
+            arrayCol[i] = ind2;
         }
         for (int j = 0; j < arrayLowCol2.Length; j++)
         {
             arrayLowRow2[j]++;
-            if(matrix[arrayLowRow2[j] + 1, arrayLowCol2[j]] == 1) down = true;
+            if (matrix[arrayLowRow2[j] + 1, arrayLowCol2[j]] == 1) down = true;
         }
     }
 }
@@ -117,6 +117,27 @@ void MoveToLeft(int[,] matrix, int[] arrayRow, int[] arrayCol)
     }
 }
 
+void CreateCorner(int[,] matrix, int[] arrayRow, int[] arrayCol)
+{
+    int middle = matrix.GetLength(1) / 2;
+    int i = 0;
+    int ind1 = 1;
+    int ind2 = middle - 2;
+    while (i < arrayRow.Length)
+    {
+        ind2 += 1;
+        if (i == 1)
+        {
+            ind1 = 2;
+            ind2 -= 1;
+        }
+        arrayRow[i] = ind1;
+        arrayCol[i] = ind2;
+        matrix[ind1, ind2] = 1;
+        i++;
+    }
+}
+
 void CreateZ(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
     int middle = matrix.GetLength(1) / 2;
@@ -154,9 +175,10 @@ void CreateLine(int[,] matrix, int[] arrayRow, int[] arrayCol)
 
 int ChangeFigure(int[,] matrix, int[] arrayRow, int[] arrayCol)
 {
-    int numFigure = new Random().Next(2);
+    int numFigure = new Random().Next(3);
     if (numFigure == 0) CreateLine(matrix, arrayRow, arrayCol);
     if (numFigure == 1) CreateZ(matrix, arrayRow, arrayCol);
+    if (numFigure == 2) CreateCorner(matrix, arrayRow, arrayCol);
     return numFigure;
 }
 
@@ -212,5 +234,4 @@ while (actionNum != 5)
     if (actionNum == 2) MoveToRight(tetrisBoard, figurePositionRow, figurePositionCol);
     if (actionNum == 3) Rotate(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
     if (actionNum == 4) LowDown(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
-
 }
