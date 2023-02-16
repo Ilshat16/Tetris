@@ -1,4 +1,27 @@
-﻿void MoveDown(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
+﻿void DeleteFoolLine(int[,] matrix, int row)
+{
+    for (int i = row; i > 1; i--)
+    {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+            matrix[i, j] = matrix[i - 1, j];
+        }
+    }
+}
+
+void SearchFoolLine(int[,] matrix)
+{
+    for (int i = 1; i < matrix.GetLength(0) - 1; i++)
+    {
+        bool isFool = true;
+        for (int j = 1; j < matrix.GetLength(1) - 1; j++)
+        {
+            if (matrix[i, j] == 0) isFool = false;
+        }
+        if (isFool) DeleteFoolLine(matrix, i);
+    }
+}
+void MoveDown(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
 {
     int[] arrayLowRow1 = new int[4];
     int[] arrayLowCol1 = new int[4];
@@ -59,24 +82,24 @@
 
 void Rotate(int[,] matrix, int[] arrayRow, int[] arrayCol, int num)
 {
-    int[,] figreMatrix = new int[4, 4];
+    int[,] figureMatrix = new int[4, 4];
     int ind1 = arrayRow[0];
     int ind2 = arrayCol[0];
-    for (int i = 0; i < figreMatrix.GetLength(0); i++)
+    for (int i = 0; i < figureMatrix.GetLength(0); i++)
     {
-        for (int j = 0; j < figreMatrix.GetLength(1); j++)
+        for (int j = 0; j < figureMatrix.GetLength(1); j++)
         {
-            figreMatrix[j, i] = matrix[ind1 + i, ind2 + j];
+            figureMatrix[j, i] = matrix[ind1 + i, ind2 + j];
         }
     }
     int k = 0;
-    for (int i = 0; i < figreMatrix.GetLength(0); i++)
+    for (int i = 0; i < figureMatrix.GetLength(0); i++)
     {
-        for (int j = 0; j < figreMatrix.GetLength(1); j++)
+        for (int j = 0; j < figureMatrix.GetLength(1); j++)
         {
             int i1 = ind1 + i;
             int i2 = ind2 + j;
-            matrix[i1, i2] = figreMatrix[i, j];
+            matrix[i1, i2] = figureMatrix[i, j];
             if (matrix[i1, i2] == 1)
             {
                 arrayRow[k] = i1;
@@ -224,7 +247,7 @@ int[] figurePositionCol = new int[4];
 CreateBorder(tetrisBoard);
 PrintMatrix(tetrisBoard);
 bool canContinue = true;
-while(canContinue)
+while (canContinue)
 {
     int numFigure = ChangeFigure(tetrisBoard, figurePositionRow, figurePositionCol);
     int actionNum = 0;
@@ -237,13 +260,14 @@ while(canContinue)
         if (actionNum == 1) MoveToLeft(tetrisBoard, figurePositionRow, figurePositionCol);
         if (actionNum == 2) MoveToRight(tetrisBoard, figurePositionRow, figurePositionCol);
         if (actionNum == 3) Rotate(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
-        if (actionNum == 4) 
+        if (actionNum == 4)
         {
             MoveDown(tetrisBoard, figurePositionRow, figurePositionCol, numFigure);
+            SearchFoolLine(tetrisBoard);
             break;
         }
         PrintMatrix(tetrisBoard);
     }
     if (actionNum == 5) canContinue = false;
-    
+
 }
